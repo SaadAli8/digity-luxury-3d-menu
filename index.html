@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#0a0b0e" />
+    <title>DIGITY Luxury 3D Menu</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@300;400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <div id="app">
+      <header class="hud hud--top">
+        <div class="brand" aria-label="Brand">
+          <span class="brand__wordmark">DIGITY</span>
+        </div>
+
+        <div class="hud__spacer" aria-hidden="true"></div>
+      </header>
+
+      <div class="selector" aria-label="Dish selector">
+        <button class="chip is-active" type="button" data-dish="avocado">Avocado</button>
+        <button class="chip" type="button" data-dish="fish">Barramundi</button>
+        <button class="chip" type="button" data-dish="olives">Olives Dish</button>
+        <button class="chip" type="button" data-dish="water">Sparkling Water</button>
+        <button class="chip" type="button" data-dish="tea">Afternoon Tea</button>
+      </div>
+
+      <div class="viewer-area">
+        <div id="viewer" aria-label="3D viewer"></div>
+        <div class="vignette" aria-hidden="true"></div>
+      </div>
+
+      <footer class="hud hud--bottom" aria-label="Dish details">
+        <div class="hud__spacer" aria-hidden="true"></div>
+
+        <div class="dish dish--bottom swish-in" aria-label="Dish information">
+          <div class="dish__name" id="dishName">—</div>
+          <div class="dish__desc" id="dishDesc">—</div>
+          <div class="dish__meta">
+            <span class="dish__price" id="dishPrice">—</span>
+          </div>
+        </div>
+
+        <div class="hud__spacer" aria-hidden="true"></div>
+      </footer>
+
+      <div id="loader" class="loader" aria-live="polite" aria-label="Loading">
+        <div class="loader__panel">
+          <div class="loader__brand">DIGITY</div>
+          <div class="loader__title">Loading</div>
+
+          <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+            <div class="progress__bar" id="progressBar"></div>
+          </div>
+
+          <div class="loader__row">
+            <div class="loader__pct" id="progressPct">0%</div>
+            <div class="loader__hint" id="progressHint">Preparing viewer…</div>
+          </div>
+
+          <div class="loader__drop" id="dropMsg" hidden>Drop your <span class="mono">dish.glb</span> into <span class="mono">/public/models/</span></div>
+        </div>
+      </div>
+
+      <div id="dropToast" class="toast" hidden aria-label="Model missing">
+        Drop your <span class="mono">dish.glb</span> into <span class="mono">/public/models/</span>
+      </div>
+
+    </div>
+
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
+

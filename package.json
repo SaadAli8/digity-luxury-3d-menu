@@ -1,0 +1,23 @@
+{
+  "name": "digity-luxury-3d-menu",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "DIGITY Luxury 3D Menu - production-quality Three.js POC (Vite + Vanilla TS).",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -p tsconfig.json && vite build",
+    "fetch:model": "node scripts/fetch-model.mjs",
+    "fetch:demo-models": "node scripts/fetch-demo-models.mjs",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "gifuct-js": "^2.1.2",
+    "three": "^0.183.1"
+  },
+  "devDependencies": {
+    "@types/three": "^0.183.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.1"
+  }
+}
