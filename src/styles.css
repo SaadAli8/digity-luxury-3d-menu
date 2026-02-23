@@ -182,17 +182,18 @@ canvas {
 
 .selector {
   display: flex;
+  flex-wrap: nowrap;
   gap: 32px;
   justify-content: center;
   pointer-events: auto;
   padding: 10px var(--pad) 14px;
-  max-width: min(840px, 100%);
+  max-width: 100%;
   margin: 0 auto;
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
-  -webkit-mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
-  mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
+  mask-image: linear-gradient(to right, transparent, black 8%, black 92%, transparent);
   z-index: 2;
 }
 
@@ -219,6 +220,7 @@ canvas {
   transition: color 240ms ease;
   position: relative;
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 .chip:hover {
@@ -505,20 +507,24 @@ canvas {
   }
 
   .selector {
-    gap: 20px;
+    gap: 16px;
     padding: 12px var(--pad) 16px;
     justify-content: flex-start;
+    padding-left: var(--pad);
+    padding-right: var(--pad);
+    scroll-padding-inline: var(--pad);
   }
 
   .chip {
-    padding: 12px 4px;
+    padding: 12px 8px;
     min-height: 44px;
     min-width: 44px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
     font-size: 11px;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.08em;
+    flex-shrink: 0;
   }
 
   .dish--bottom {
@@ -567,14 +573,15 @@ canvas {
   }
 
   .selector {
-    gap: 12px;
-    padding-left: var(--pad);
-    padding-right: var(--pad);
+    gap: 14px;
+    padding: 10px var(--pad) 14px;
+    scroll-padding-inline: var(--pad);
   }
 
   .chip {
-    padding: 10px 2px;
+    padding: 10px 6px;
     font-size: 10px;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.06em;
+    flex-shrink: 0;
   }
 }
