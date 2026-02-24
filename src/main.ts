@@ -156,20 +156,23 @@ function setArButtonForDish(id: DishId): void {
   if (!cfg.ar) {
     btn.hidden = true;
     btn.onclick = null;
+    btn.removeAttribute('rel');
+    btn.removeAttribute('target');
+    btn.href = '#';
     return;
   }
 
   btn.hidden = false;
   btn.textContent = 'View in AR';
+  btn.removeAttribute('target');
 
   btn.onclick = (e) => {
-    e.preventDefault();
-
     const title = cfg.name;
     const glbUrl = new URL(cfg.modelPath, window.location.origin).toString();
 
     // Android: open Google Scene Viewer (AR camera placement)
     if (isAndroid()) {
+      e.preventDefault();
       const fallback = window.location.href;
       const intent = `intent://arvr.google.com/scene-viewer/1.0?file=${encodeURIComponent(glbUrl)}&mode=ar_only&title=${encodeURIComponent(title)}#Intent;scheme=https;package=com.google.ar.core;action=android.intent.action.VIEW;S.browser_fallback_url=${encodeURIComponent(
         fallback,
@@ -182,21 +185,23 @@ function setArButtonForDish(id: DishId): void {
     if (isIOS()) {
       const usdzPath = cfg.ar?.usdzPath;
       if (!usdzPath) {
+        e.preventDefault();
         showArToast('iPhone/iPad AR needs a .usdz file. Add it to /public/models/ and redeploy.');
         return;
       }
 
-      const usdzUrl = new URL(usdzPath, window.location.origin).toString();
-      const a = document.createElement('a');
-      a.setAttribute('rel', 'ar');
-      a.href = usdzUrl;
-      document.body.appendChild(a);
-      a.click();
-      a.remove();
+      // Important: iOS Quick Look is most reliable when the *actual* tapped element
+      // is an <a rel="ar" href="...usdz"> link (no synthetic clicks).
+      btn.setAttribute('rel', 'ar');
+      btn.href = new URL(usdzPath, window.location.origin).toString();
+      // Allow default navigation to Quick Look.
       return;
     }
 
     // Desktop: open the model file in a new tab
+    e.preventDefault();
+    btn.removeAttribute('rel');
+    btn.href = glbUrl;
     window.open(glbUrl, '_blank', 'noopener,noreferrer');
   };
 }
