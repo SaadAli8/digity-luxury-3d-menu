@@ -21,6 +21,10 @@ type DishConfig = {
   modelPath: string;
   remoteModelUrl?: string;
   targetMaxSize: number;
+  ar?: {
+    /** USDZ file path for iOS Quick Look (e.g. /models/foo.usdz) */
+    usdzPath?: string;
+  };
   credit?: string;
 };
 
@@ -64,6 +68,10 @@ const DISHES: Record<
     description: 'Nigiri assortment presented on a cedar boat with clean cuts and bright finish.',
     modelPath: '/models/sushi_boat_nigiri.glb',
     targetMaxSize: 1.15,
+    ar: {
+      // iOS Quick Look needs USDZ; place it in public/models when available
+      usdzPath: '/models/sushi_boat_nigiri.usdz',
+    },
     credit: 'Client-provided sushi model (used with permission).',
   },
   water: {
@@ -106,6 +114,8 @@ const ui = {
   dishName: () => $('dishName'),
   dishDesc: () => $('dishDesc'),
   dishPrice: () => $('dishPrice'),
+  arButton: () => $('arButton') as HTMLAnchorElement,
+  arToast: () => $('arToast'),
   loader: () => $('loader'),
   progressBar: () => $('progressBar'),
   progressPct: () => $('progressPct'),
@@ -114,6 +124,82 @@ const ui = {
   dropToast: () => $('dropToast'),
   viewer: () => $('viewer'),
 };
+
+function isAndroid(): boolean {
+  return /Android/i.test(navigator.userAgent);
+}
+
+function isIOS(): boolean {
+  // iPadOS often reports as Mac; detect touch points.
+  const ua = navigator.userAgent;
+  const iOSLike = /iPad|iPhone|iPod/i.test(ua);
+  const iPadOs = navigator.platform === 'MacIntel' && (navigator as Navigator & { maxTouchPoints?: number }).maxTouchPoints;
+  return iOSLike || Boolean(iPadOs);
+}
+
+let arToastTimer: number | null = null;
+function showArToast(message: string): void {
+  if (arToastTimer != null) window.clearTimeout(arToastTimer);
+  ui.arToast().textContent = message;
+  ui.arToast().hidden = false;
+  arToastTimer = window.setTimeout(() => {
+    ui.arToast().hidden = true;
+    arToastTimer = null;
+  }, 4200);
+}
+
+function setArButtonForDish(id: DishId): void {
+  const btn = ui.arButton();
+  const cfg = DISHES[id];
+
+  // Only show AR button when AR is configured (client sushi).
+  if (!cfg.ar) {
+    btn.hidden = true;
+    btn.onclick = null;
+    return;
+  }
+
+  btn.hidden = false;
+  btn.textContent = 'View in AR';
+
+  btn.onclick = (e) => {
+    e.preventDefault();
+
+    const title = cfg.name;
+    const glbUrl = new URL(cfg.modelPath, window.location.origin).toString();
+
+    // Android: open Google Scene Viewer (AR camera placement)
+    if (isAndroid()) {
+      const fallback = window.location.href;
+      const intent = `intent://arvr.google.com/scene-viewer/1.0?file=${encodeURIComponent(glbUrl)}&mode=ar_only&title=${encodeURIComponent(title)}#Intent;scheme=https;package=com.google.ar.core;action=android.intent.action.VIEW;S.browser_fallback_url=${encodeURIComponent(
+        fallback,
+      )};end;`;
+      window.location.href = intent;
+      return;
+    }
+
+    // iOS: open Quick Look (AR camera placement) using USDZ
+    if (isIOS()) {
+      const usdzPath = cfg.ar?.usdzPath;
+      if (!usdzPath) {
+        showArToast('iPhone/iPad AR needs a .usdz file. Add it to /public/models/ and redeploy.');
+        return;
+      }
+
+      const usdzUrl = new URL(usdzPath, window.location.origin).toString();
+      const a = document.createElement('a');
+      a.setAttribute('rel', 'ar');
+      a.href = usdzUrl;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      return;
+    }
+
+    // Desktop: open the model file in a new tab
+    window.open(glbUrl, '_blank', 'noopener,noreferrer');
+  };
+}
 
 function setProgress(pct: number, hint: string): void {
   const clamped = Math.max(0, Math.min(100, pct));
@@ -133,6 +219,7 @@ async function boot(): Promise<void> {
     ui.dishName().textContent = DISHES[id].name;
     ui.dishDesc().textContent = DISHES[id].description;
     ui.dishPrice().textContent = DISHES[id].price;
+    setArButtonForDish(id);
   };
   setDishText(initial);
 

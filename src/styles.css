@@ -254,6 +254,7 @@ canvas {
   justify-self: center;
   text-align: center;
   max-width: min(480px, 90vw);
+  pointer-events: auto;
   padding: 22px 28px 20px;
   border-radius: 16px;
   border: 1px solid rgba(255, 255, 255, 0.07);
@@ -308,6 +309,32 @@ canvas {
   border-radius: 6px;
   border: 1px solid rgba(200, 164, 106, 0.28);
   background: rgba(200, 164, 106, 0.08);
+}
+
+.dish__ar {
+  font-family: "Inter", var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: rgba(255, 255, 255, 0.88);
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(255, 255, 255, 0.06);
+  backdrop-filter: blur(10px);
+  transition: transform 160ms ease, background 200ms ease, border-color 200ms ease, color 200ms ease;
+}
+
+.dish__ar:hover {
+  background: rgba(255, 255, 255, 0.10);
+  border-color: rgba(255, 255, 255, 0.22);
+  color: rgba(255, 255, 255, 0.95);
+}
+
+.dish__ar:active {
+  transform: translateY(1px);
 }
 
 .hint {
@@ -446,6 +473,15 @@ canvas {
   font-size: 12px;
   letter-spacing: 0.02em;
   pointer-events: none;
+}
+
+.toast--ar {
+  left: 50%;
+  top: auto;
+  bottom: calc(max(var(--safe-bottom), 18px) + 140px);
+  transform: translateX(-50%);
+  max-width: min(640px, calc(100vw - (var(--pad) * 2)));
+  text-align: center;
 }
 
 .mono {
