@@ -12,7 +12,7 @@ const CONFIG = {
   preferHdrEnvironment: true,
 };
 
-type DishId = 'avocado' | 'fish' | 'olives' | 'water' | 'tea';
+type DishId = 'avocado' | 'fish' | 'olives' | 'sushi' | 'water' | 'tea';
 
 type DishConfig = {
   name: string;
@@ -57,6 +57,14 @@ const DISHES: Record<
       'https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/IridescentDishWithOlives/glTF-Binary/IridescentDishWithOlives.glb',
     targetMaxSize: 1.35,
     credit: 'Iridescent Dish with Olives: CC BY 4.0 (Wayfair LLC) via Khronos glTF Sample Assets.',
+  },
+  sushi: {
+    name: 'Sushi Boat, Nigiri',
+    price: '$48',
+    description: 'Nigiri assortment presented on a cedar boat with clean cuts and bright finish.',
+    modelPath: '/models/sushi_boat_nigiri.glb',
+    targetMaxSize: 1.15,
+    credit: 'Client-provided sushi model (used with permission).',
   },
   water: {
     name: 'Sparkling Water',
@@ -120,7 +128,7 @@ function hideLoaderSoon(): void {
 }
 
 async function boot(): Promise<void> {
-  const initial: DishId = 'avocado';
+  const initial: DishId = 'sushi';
   const setDishText = (id: DishId) => {
     ui.dishName().textContent = DISHES[id].name;
     ui.dishDesc().textContent = DISHES[id].description;

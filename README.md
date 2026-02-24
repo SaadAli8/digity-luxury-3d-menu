@@ -17,7 +17,7 @@ A production-quality proof of concept showcasing a luxury UI + smooth Three.js i
 /src/three/viewer.ts
 /src/three/loaders.ts
 /src/styles.css
-/public/models/dish.glb              (add your model)
+/public/models/*.glb                 (3D models served by the site)
 /public/hdr/studio_small_08_1k.hdr   (optional HDR)
 ```
 
@@ -67,20 +67,22 @@ Models downloaded into `public/models/`:
 - `avocado.glb` — CC0 (Microsoft) via Khronos glTF Sample Assets
 - `barramundi_fish.glb` — CC0 (Microsoft) via Khronos glTF Sample Assets
 - `iridescent_dish_olives.glb` — CC BY 4.0 (Wayfair LLC) via Khronos glTF Sample Assets (**attribution required**)
-- `sushi.glb` — MIT via code4fukui/xrgourmet
+- `water_bottle.glb` — CC0 (Microsoft) via Khronos glTF Sample Assets
+- `teacup.glb` — CC0 via Khronos glTF Sample Assets
+
+### Client-provided sushi file
+
+The client shared this file:
+
+- `sushi_boat_nigiri.glb` (currently placed in the project root: `./sushi_boat_nigiri.glb`)
+
+For the website to load it in production, it must be in:
+
+- `public/models/sushi_boat_nigiri.glb` (served at `/models/sushi_boat_nigiri.glb`)
 
 Notes:
 - If you **don’t** download these files, the app will try loading the same models from their **upstream raw URLs** automatically (then fall back to a premium placeholder only if that also fails).
-
-## Optional: add an animated GIF/video texture (Sweet page)
-
-You can wrap an animated texture around the cake to create a “flowing” band.
-
-1. Put your file here:
-   - `public/textures/flow.gif` (works, decoded at runtime)
-   - `public/textures/flow.mp4` (recommended, smoother and more efficient)
-2. Open `src/sweet.ts` and set:
-   - `flowTexturePath: '/textures/flow.gif'` or `'/textures/flow.mp4'`
+- The client sushi model is **local only** (no upstream fallback URL).
 
 ### Asset guidance (performance)
 

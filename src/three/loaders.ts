@@ -88,6 +88,34 @@ function applyModelDefaults(root: THREE.Object3D, shadowsEnabled: boolean): void
   });
 }
 
+function tuneModelById(root: THREE.Object3D, id?: string): void {
+  if (id !== 'sushi') return;
+
+  // Presentational orientation: face the camera with a premium angle.
+  root.rotation.y = Math.PI * 0.28;
+
+  // Reduce “plastic” feel by softening reflections and specular.
+  root.traverse((obj: THREE.Object3D) => {
+    if (!(obj instanceof THREE.Mesh)) return;
+
+    const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+    for (const m of mats) {
+      if (!m) continue;
+
+      const mat = m as unknown as THREE.MeshStandardMaterial & Partial<THREE.MeshPhysicalMaterial>;
+
+      if (typeof mat.envMapIntensity === 'number') mat.envMapIntensity = Math.min(mat.envMapIntensity, 0.6);
+      if (typeof mat.metalness === 'number') mat.metalness = Math.min(mat.metalness, 0.18);
+      if (typeof mat.roughness === 'number') mat.roughness = Math.max(mat.roughness, 0.32);
+
+      if (typeof mat.clearcoat === 'number') mat.clearcoat = Math.min(mat.clearcoat, 0.25);
+      if (typeof mat.clearcoatRoughness === 'number') mat.clearcoatRoughness = Math.max(mat.clearcoatRoughness, 0.28);
+
+      (m as THREE.Material).needsUpdate = true;
+    }
+  });
+}
+
 function centerAndScale(root: THREE.Object3D, targetMaxSize: number): void {
   const box = new THREE.Box3().setFromObject(root);
   const size = box.getSize(new THREE.Vector3());
@@ -715,6 +743,7 @@ export async function loadDishOrPlaceholder(opts: LoadDishOptions): Promise<{
     });
 
     applyModelDefaults(gltf, opts.shadowsEnabled);
+    tuneModelById(gltf, opts.id);
     centerAndScale(gltf, targetMaxSize);
     placeOnStage(gltf);
 
