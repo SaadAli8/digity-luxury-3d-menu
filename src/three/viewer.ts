@@ -20,6 +20,7 @@ export class LuxuryViewer {
   private resizeObserver: ResizeObserver | null = null;
   private isVisible = true;
   private debugFpsEl: HTMLElement | null = null;
+  private currentRoot: THREE.Object3D | null = null;
 
   private fpsFrameCount = 0;
   private fpsLastT = performance.now();
@@ -73,6 +74,12 @@ export class LuxuryViewer {
     this.handleResize();
     this.bindResize(cfg.container);
     this.bindVisibility();
+
+    // Mobile browsers often settle layout/toolbars after first paint.
+    // Re-run sizing a few times to keep the model centered without user interaction.
+    requestAnimationFrame(() => this.handleResize());
+    window.setTimeout(this.handleResize, 200);
+    window.setTimeout(this.handleResize, 900);
   }
 
   setDebugFpsElement(el: HTMLElement | null): void {
@@ -119,7 +126,12 @@ export class LuxuryViewer {
     }
 
     stage.add(root);
+    this.currentRoot = root;
 
+    this.frameObject(root);
+  }
+
+  private frameObject(root: THREE.Object3D): void {
     // Auto-frame for any model: keep composition premium and consistent.
     const box = new THREE.Box3().setFromObject(root);
     const size = box.getSize(new THREE.Vector3());
@@ -133,7 +145,7 @@ export class LuxuryViewer {
     const vFov = THREE.MathUtils.degToRad(cam.fov);
     const hFov = 2 * Math.atan(Math.tan(vFov / 2) * cam.aspect);
     const fitFov = Math.min(vFov, hFov);
-    const padding = 1.52; // breathing room so models (e.g. avocado) don’t dominate the frame
+    const padding = 1.52; // breathing room so models don’t dominate the frame
     const distance = (radius / Math.sin(fitFov / 2)) * padding;
 
     const minD = Math.max(1.35, distance * 0.7);
@@ -222,6 +234,9 @@ export class LuxuryViewer {
 
     this.bundle.camera.aspect = w / h;
     this.bundle.camera.updateProjectionMatrix();
+
+    // Keep current model framed/centered after any size/aspect change.
+    if (this.currentRoot) this.frameObject(this.currentRoot);
   };
 
   private updateFps(): void {
