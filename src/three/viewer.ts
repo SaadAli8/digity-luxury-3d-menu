@@ -15,6 +15,7 @@ export class LuxuryViewer {
   readonly controls: OrbitControls;
 
   private pixelRatioCap: number;
+  private framingPadding = 1.52;
   private ownedEnvironment: THREE.Texture | null = null;
   private rafId: number | null = null;
   private resizeObserver: ResizeObserver | null = null;
@@ -131,6 +132,12 @@ export class LuxuryViewer {
     this.frameObject(root);
   }
 
+  setFramingPadding(padding: number): void {
+    // Keep in a sensible range
+    this.framingPadding = Math.max(1.1, Math.min(2.6, padding));
+    if (this.currentRoot) this.frameObject(this.currentRoot);
+  }
+
   private frameObject(root: THREE.Object3D): void {
     // Auto-frame for any model: keep composition premium and consistent.
     const box = new THREE.Box3().setFromObject(root);
@@ -145,8 +152,7 @@ export class LuxuryViewer {
     const vFov = THREE.MathUtils.degToRad(cam.fov);
     const hFov = 2 * Math.atan(Math.tan(vFov / 2) * cam.aspect);
     const fitFov = Math.min(vFov, hFov);
-    const padding = 1.52; // breathing room so models don’t dominate the frame
-    const distance = (radius / Math.sin(fitFov / 2)) * padding;
+    const distance = (radius / Math.sin(fitFov / 2)) * this.framingPadding;
 
     const minD = Math.max(1.35, distance * 0.7);
     const maxD = Math.max(minD + 0.8, distance * 2.0);

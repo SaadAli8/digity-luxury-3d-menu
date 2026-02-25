@@ -21,6 +21,7 @@ type DishConfig = {
   modelPath: string;
   remoteModelUrl?: string;
   targetMaxSize: number;
+  viewerPadding?: number;
   ar?: {
     /** USDZ file path for iOS Quick Look (e.g. /models/foo.usdz) */
     usdzPath?: string;
@@ -37,7 +38,8 @@ const DISHES: Record<
     price: '—',
     description: 'Known-good iOS Quick Look asset to verify AR works end-to-end.',
     modelPath: '/models/teapot.glb',
-    targetMaxSize: 1.25,
+    targetMaxSize: 1.0,
+    viewerPadding: 2.05,
     ar: {
       usdzPath: '/models/teapot.usdz',
     },
@@ -288,6 +290,7 @@ async function boot(): Promise<void> {
 
     const dish = await loadWithRemoteFallback(cfg.modelPath, cfg.remoteModelUrl, cfg.targetMaxSize);
     viewer.setObject(dish.root);
+    viewer.setFramingPadding(cfg.viewerPadding ?? 1.52);
     // Sushi model looks better static; other dishes use gentle auto-rotate
     viewer.setAutoRotate(CONFIG.autoRotate);
 
