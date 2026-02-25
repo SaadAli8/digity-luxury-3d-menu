@@ -81,6 +81,10 @@ const DISHES: Record<
     description: 'Nigiri assortment presented on a cedar boat with clean cuts and bright finish.',
     modelPath: '/models/sushi_boat_nigiri.glb',
     targetMaxSize: 1.15,
+    viewerPadding: 1.8,
+    ar: {
+      usdzPath: '/models/Sushi_Boat_Nigiri_real.usdz',
+    },
     credit: 'Client-provided sushi model (used with permission).',
   },
   water: {
@@ -224,7 +228,7 @@ function hideLoaderSoon(): void {
 }
 
 async function boot(): Promise<void> {
-  const initial: DishId = 'teapot';
+  const initial: DishId = 'sushi';
   const setDishText = (id: DishId) => {
     ui.dishName().textContent = DISHES[id].name;
     ui.dishDesc().textContent = DISHES[id].description;
