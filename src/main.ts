@@ -12,7 +12,7 @@ const CONFIG = {
   preferHdrEnvironment: true,
 };
 
-type DishId = 'avocado' | 'fish' | 'olives' | 'sushi' | 'water' | 'tea';
+type DishId = 'teapot' | 'avocado' | 'fish' | 'olives' | 'sushi' | 'water' | 'tea';
 
 type DishConfig = {
   name: string;
@@ -32,6 +32,17 @@ const DISHES: Record<
   DishId,
   DishConfig
 > = {
+  teapot: {
+    name: 'Teapot (AR Test)',
+    price: '—',
+    description: 'Known-good iOS Quick Look asset to verify AR works end-to-end.',
+    modelPath: '/models/teapot.glb',
+    targetMaxSize: 1.25,
+    ar: {
+      usdzPath: '/models/teapot.usdz',
+    },
+    credit: 'Teapot test asset.',
+  },
   avocado: {
     name: 'Avocado Tartare',
     price: '$18',
@@ -68,11 +79,6 @@ const DISHES: Record<
     description: 'Nigiri assortment presented on a cedar boat with clean cuts and bright finish.',
     modelPath: '/models/sushi_boat_nigiri.glb',
     targetMaxSize: 1.15,
-    ar: {
-      // TEMP (test): known-good Quick Look file to verify iOS AR flow end-to-end.
-      // Once confirmed, switch back to: '/models/sushi_boat_nigiri.usdz'
-      usdzPath: '/models/teapot.usdz',
-    },
     credit: 'Client-provided sushi model (used with permission).',
   },
   water: {
@@ -216,7 +222,7 @@ function hideLoaderSoon(): void {
 }
 
 async function boot(): Promise<void> {
-  const initial: DishId = 'sushi';
+  const initial: DishId = 'teapot';
   const setDishText = (id: DishId) => {
     ui.dishName().textContent = DISHES[id].name;
     ui.dishDesc().textContent = DISHES[id].description;
