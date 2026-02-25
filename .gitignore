@@ -37,6 +37,9 @@ Thumbs.db
 .parcel-cache
 .vite
 
+# Local tooling / virtual environments
+.usd-venv/
+
 # Deploy / hosting
 .vercel
 .netlify

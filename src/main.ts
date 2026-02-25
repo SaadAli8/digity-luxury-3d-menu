@@ -69,8 +69,9 @@ const DISHES: Record<
     modelPath: '/models/sushi_boat_nigiri.glb',
     targetMaxSize: 1.15,
     ar: {
-      // iOS Quick Look needs USDZ; place it in public/models when available
-      usdzPath: '/models/sushi_boat_nigiri.usdz',
+      // TEMP (test): known-good Quick Look file to verify iOS AR flow end-to-end.
+      // Once confirmed, switch back to: '/models/sushi_boat_nigiri.usdz'
+      usdzPath: '/models/teapot.usdz',
     },
     credit: 'Client-provided sushi model (used with permission).',
   },
@@ -116,6 +117,7 @@ const ui = {
   dishPrice: () => $('dishPrice'),
   arButton: () => $('arButton') as HTMLAnchorElement,
   arToast: () => $('arToast'),
+  arViewer: () => $('arViewer') as HTMLElement,
   loader: () => $('loader'),
   progressBar: () => $('progressBar'),
   progressPct: () => $('progressPct'),
@@ -124,6 +126,25 @@ const ui = {
   dropToast: () => $('dropToast'),
   viewer: () => $('viewer'),
 };
+
+type ModelViewerEl = HTMLElement & {
+  src: string;
+  iosSrc?: string;
+  activateAR?: () => void;
+};
+
+function activateArExperience(glbUrl: string, usdzUrl?: string): void {
+  const mv = ui.arViewer() as ModelViewerEl;
+  mv.src = glbUrl;
+  if (usdzUrl) mv.iosSrc = usdzUrl;
+
+  if (typeof mv.activateAR === 'function') {
+    mv.activateAR();
+    return;
+  }
+
+  showArToast('AR is not available in this browser. Please open in Safari (iOS) or Chrome (Android).');
+}
 
 function isAndroid(): boolean {
   return /Android/i.test(navigator.userAgent);
@@ -165,44 +186,20 @@ function setArButtonForDish(id: DishId): void {
   btn.hidden = false;
   btn.textContent = 'View in AR';
   btn.removeAttribute('target');
+  btn.removeAttribute('rel');
+  btn.href = '#';
 
   btn.onclick = (e) => {
-    const title = cfg.name;
-    const glbUrl = new URL(cfg.modelPath, window.location.origin).toString();
-
-    // Android: open Google Scene Viewer (AR camera placement)
-    if (isAndroid()) {
-      e.preventDefault();
-      const fallback = window.location.href;
-      const intent = `intent://arvr.google.com/scene-viewer/1.0?file=${encodeURIComponent(glbUrl)}&mode=ar_only&title=${encodeURIComponent(title)}#Intent;scheme=https;package=com.google.ar.core;action=android.intent.action.VIEW;S.browser_fallback_url=${encodeURIComponent(
-        fallback,
-      )};end;`;
-      window.location.href = intent;
-      return;
-    }
-
-    // iOS: open Quick Look (AR camera placement) using USDZ
-    if (isIOS()) {
-      const usdzPath = cfg.ar?.usdzPath;
-      if (!usdzPath) {
-        e.preventDefault();
-        showArToast('iPhone/iPad AR needs a .usdz file. Add it to /public/models/ and redeploy.');
-        return;
-      }
-
-      // Important: iOS Quick Look is most reliable when the *actual* tapped element
-      // is an <a rel="ar" href="...usdz"> link (no synthetic clicks).
-      btn.setAttribute('rel', 'ar');
-      btn.href = new URL(usdzPath, window.location.origin).toString();
-      // Allow default navigation to Quick Look.
-      return;
-    }
-
-    // Desktop: open the model file in a new tab
     e.preventDefault();
-    btn.removeAttribute('rel');
-    btn.href = glbUrl;
-    window.open(glbUrl, '_blank', 'noopener,noreferrer');
+    const glbUrl = new URL(cfg.modelPath, window.location.origin).toString();
+    const usdzUrl = cfg.ar?.usdzPath ? new URL(cfg.ar.usdzPath, window.location.origin).toString() : undefined;
+
+    if (isIOS() && !usdzUrl) {
+      showArToast('iPhone/iPad AR needs a .usdz file. Add it to /public/models/ and redeploy.');
+      return;
+    }
+
+    activateArExperience(glbUrl, usdzUrl);
   };
 }
 
