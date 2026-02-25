@@ -38,8 +38,8 @@ const DISHES: Record<
     price: '—',
     description: 'Known-good iOS Quick Look asset to verify AR works end-to-end.',
     modelPath: '/models/teapot.glb',
-    targetMaxSize: 1.0,
-    viewerPadding: 2.05,
+    targetMaxSize: 0.9,
+    viewerPadding: 2.35,
     ar: {
       usdzPath: '/models/teapot.usdz',
     },
