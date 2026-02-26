@@ -12,7 +12,7 @@ const CONFIG = {
   preferHdrEnvironment: true,
 };
 
-type DishId = 'teapot' | 'avocado' | 'fish' | 'olives' | 'sushi' | 'water' | 'tea';
+type DishId = 'teapot' | 'avocado' | 'fish' | 'olives' | 'sushi' | 'steak' | 'pizza' | 'water' | 'tea';
 
 type DishConfig = {
   name: string;
@@ -86,6 +86,30 @@ const DISHES: Record<
       usdzPath: '/models/Sushi_Boat_Nigiri_real.usdz',
     },
     credit: 'Client-provided sushi model (used with permission).',
+  },
+  steak: {
+    name: 'Florence Steak (Bistecca)',
+    price: '$72',
+    description: 'Charred edges, warm center — a classic cut presented with a luxury finish.',
+    modelPath: '/models/florence_steak_-_fiorentina_bistecca.glb',
+    targetMaxSize: 1.25,
+    viewerPadding: 1.7,
+    ar: {
+      usdzPath: '/models/Florence_Steak_-_Fiorentina_bistecca.usdz',
+    },
+    credit: 'Client-provided steak model (used with permission).',
+  },
+  pizza: {
+    name: 'Pizza Ballerina',
+    price: '$32',
+    description: 'A crisp, airy base with a clean silhouette and premium textures.',
+    modelPath: '/models/pizza_ballerina.glb',
+    targetMaxSize: 1.2,
+    viewerPadding: 1.65,
+    ar: {
+      usdzPath: '/models/Pizza_Ballerina.usdz',
+    },
+    credit: 'Client-provided pizza model (used with permission).',
   },
   water: {
     name: 'Sparkling Water',
